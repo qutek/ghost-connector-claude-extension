@@ -44,13 +44,15 @@ export function postsTools(client: () => GhostClient) {
       }),
       run: async (args) => {
         const doc: Loose = { title: args.title, status: args.status };
-        Object.assign(doc, buildContentFields(args));
+        const content = buildContentFields(args);
+        Object.assign(doc, content.body);
         for (const k of ["excerpt", "feature_image", "featured", "meta_title", "meta_description", "published_at"] as const) {
           if (args[k] !== undefined) doc[k] = args[k];
         }
         if (args.tag_ids?.length) doc.tags = args.tag_ids.map((id) => ({ id }));
         if (args.author_ids?.length) doc.authors = args.author_ids.map((id) => ({ id }));
-        const r = (await client().createPost(doc)) as { posts?: unknown[] } | null;
+        const query = content.source ? { source: content.source } : undefined;
+        const r = (await client().createPost(doc, query)) as { posts?: unknown[] } | null;
         return r?.posts?.[0];
       },
     }),
@@ -74,13 +76,15 @@ export function postsTools(client: () => GhostClient) {
       annotations: { destructiveHint: true },
       run: async (args) => {
         const doc: Loose = {};
-        Object.assign(doc, buildContentFields(args));
+        const content = buildContentFields(args);
+        Object.assign(doc, content.body);
         for (const k of ["title", "excerpt", "feature_image", "featured", "status", "meta_title", "meta_description", "published_at"] as const) {
           if (args[k] !== undefined) doc[k] = args[k];
         }
         if (args.tag_ids?.length) doc.tags = args.tag_ids.map((id) => ({ id }));
         if (args.author_ids?.length) doc.authors = args.author_ids.map((id) => ({ id }));
-        const r = (await client().updatePost(args.id, doc, args.updated_at)) as { posts?: unknown[] } | null;
+        const query = content.source ? { source: content.source } : undefined;
+        const r = (await client().updatePost(args.id, doc, args.updated_at, query)) as { posts?: unknown[] } | null;
         return r?.posts?.[0];
       },
     }),

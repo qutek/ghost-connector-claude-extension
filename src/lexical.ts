@@ -1,8 +1,9 @@
 "use strict";
 
-// ---- Lexical helpers (Ghost v6+ uses Lexical editor format) ----
-// Ghost Admin API does NOT auto-convert html on input. We escape user
-// text and build a minimal tree.
+// ---- Content body helpers ----
+// Ghost Admin API converts HTML -> Lexical server-side when the request
+// is sent with ?source=html (see admin-api/posts/creating-a-post.mdx).
+// We no longer build Lexical JSON client-side.
 
 export interface LexicalTextNode {
   type: "text";
@@ -71,51 +72,30 @@ function emptyParagraph(): LexicalParagraphNode {
   return { type: "paragraph", version: 1, children: [] };
 }
 
-export function textToLexical(text: string): LexicalDocument {
-  const paragraphs = String(text).replace(/\r\n/g, "\n").split(/\n\n+/);
-  const children = paragraphs
-    .map((p): LexicalParagraphNode => {
-      const lines = p.split("\n");
-      const kids: Array<LexicalTextNode | LexicalLineBreakNode> = [];
-      lines.forEach((line, i) => {
-        if (line.length > 0) kids.push(textNode(line));
-        if (i < lines.length - 1) kids.push(lineBreak());
-      });
-      return { type: "paragraph", version: 1, children: kids };
-    })
-    .filter((p) => p.children.length > 0);
-  if (children.length === 0) children.push(emptyParagraph());
-  return { root: { type: "root", children, direction: "ltr", format: "", indent: 0, version: 1 } };
-}
 
 // Inline tags Ghost's Lexical renderer understands within text nodes.
 
-export function htmlToLexical(html: string): LexicalDocument {
-  const block = /<\/(?:p|div|h[1-6]|li|ul|ol|blockquote|pre|hr|br)\s*>/i;
-  const chunks = String(html)
-    .split(block)
-    .map((c) => c.replace(/^\s+|\s+$/g, ""))
-    .filter(Boolean);
-  const children = chunks
-    .map((chunk): LexicalParagraphNode => {
-      // Strip block-level wrappers but keep inline HTML intact for Ghost to render.
-      const cleaned = chunk
-        .replace(/<\/?(?:p|div|h[1-6]|li|ul|ol|blockquote)\b[^>]*>/gi, "")
-        .replace(/\s+/g, " ")
-        .trim();
-      return { type: "paragraph", version: 1, children: cleaned.length ? [textNode(cleaned)] : [] };
-    })
-    .filter((p) => p.children.length > 0);
-  if (children.length === 0) children.push(emptyParagraph());
-  return { root: { type: "root", children, direction: "ltr", format: "", indent: 0, version: 1 } };
+
+export interface BuiltContent {
+  body: ContentFields;
+  source?: "html";
 }
 
-export function buildContentFields(args: ContentArgs): ContentFields {
-  if (args.lexical) return { lexical: args.lexical };
-  if (args.mobiledoc) return { mobiledoc: args.mobiledoc };
-  if (args.html) return { lexical: JSON.stringify(htmlToLexical(args.html)) };
-  if (args.content) return { lexical: JSON.stringify(textToLexical(args.content)) };
-  return {};
+// Returns body fields + optional `source` query param. Plain `content`
+// (markdown/text) is wrapped in <p> tags and sent as HTML; Ghost performs
+// server-side conversion to Lexical.
+export function buildContentFields(args: ContentArgs): BuiltContent {
+  if (args.lexical) return { body: { lexical: args.lexical } };
+  if (args.mobiledoc) return { body: { mobiledoc: args.mobiledoc } };
+  if (args.html) return { body: { html: args.html }, source: "html" };
+  if (args.content) {
+    const html = String(args.content)
+      .split(/\n\n+/)
+      .map((blk) => `<p>${blk.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br/>")}</p>`)
+      .join("");
+    return { body: { html }, source: "html" };
+  }
+  return { body: {} };
 }
 
 export interface SummaryItem {

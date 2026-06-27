@@ -1,5 +1,9 @@
 # Ghost Connector for Claude
 
+<p align="center">
+  <img src="icon.png" alt="Ghost Connector for Claude" width="128" />
+</p>
+
 > Write, publish, and manage your Ghost blog directly from Claude Desktop.
 
 [![Version](https://img.shields.io/badge/version-0.1.0-blue)](#)
@@ -178,9 +182,11 @@ Once installed, try these prompts in Claude Desktop:
 ### Webhooks (3)
 | Tool | Description |
 |---|---|
-| `ghost_list_webhooks` | List configured webhooks. |
-| `ghost_create_webhook` | Create a webhook (event, target_url, name required). |
+| `ghost_create_webhook` | Create a webhook. Required: `event` + `target_url`. Optional: `name`, `secret`, `api_version`. |
+| `ghost_update_webhook` | Update a webhook (event, target_url, name, api_version). |
 | `ghost_delete_webhook` | Delete a webhook by id. |
+
+> Ghost Admin API does not expose a list endpoint for webhooks — create, update, delete only ([docs](https://ghost.org/docs/admin-api/webhooks/)).
 
 ### Meta (1)
 | Tool | Description |
@@ -255,7 +261,7 @@ npm run inspector   # launch mcp-inspector for interactive debugging
 src/
 ├── index.ts              Boot + McpServer registration loop
 ├── ghost.ts              GhostClient: JWT signing, retries, GhostApiError
-├── lexical.ts            Pure helpers: text/html → Ghost Lexical format
+├── lexical.ts            Content body helpers: html/content → ?source=html (server-side Lexical)
 └── tools/
     ├── _shared.ts        ToolDef type + shared Zod schemas
     ├── posts.ts          5 post tools

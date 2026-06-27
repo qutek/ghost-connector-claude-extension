@@ -34,33 +34,44 @@ export function integrationsTools(client: () => GhostClient) {
         return r?.images?.[0] ?? null;
       },
     }),
-
     // ---- WEBHOOKS ----
     t({
-      name: "ghost_list_webhooks",
-      description: "List configured webhooks.",
-      schema: z.object({}).strict(),
-      annotations: { readOnlyHint: true },
-      run: async () => {
-        const r = (await client().listWebhooks()) as { webhooks?: SummaryItem[] } | null;
-        return summarize("webhooks", r?.webhooks ?? []);
-      },
-    }),
-    t({
       name: "ghost_create_webhook",
-      description: "Create a webhook. event, target_url, name required.",
+      description: "Create a webhook. Required: event + target_url. Optional: name, secret, api_version.",
       schema: z.object({
-        name: z.string(),
-        event: z.string().describe("e.g. 'post.published', 'member.added', 'member.deleted'."),
-        target_url: z.string(),
+        event: z.string().describe("e.g. 'post.published', 'post.added', 'member.added', 'member.deleted'."),
+        target_url: z.string().describe("HTTPS URL Ghost will POST to on trigger."),
+        name: z.string().optional(),
         secret: z.string().optional(),
         api_version: z.string().default("v5.3"),
       }),
       run: async (args) => {
-        const doc: Loose = { name: args.name, event: args.event, target_url: args.target_url };
+        const doc: Loose = { event: args.event, target_url: args.target_url };
+        if (args.name) doc.name = args.name;
         if (args.secret) doc.secret = args.secret;
         if (args.api_version) doc.api_version = args.api_version;
         const r = (await client().createWebhook(doc)) as { webhooks?: unknown[] } | null;
+        return r?.webhooks?.[0];
+      },
+    }),
+    t({
+      name: "ghost_update_webhook",
+      description: "Update an existing webhook. Pass any writable field: event, target_url, name, api_version.",
+      schema: z.object({
+        id: z.string(),
+        event: z.string().optional().describe("e.g. 'post.published', 'member.added'."),
+        target_url: z.string().optional(),
+        name: z.string().optional(),
+        api_version: z.string().optional(),
+      }),
+      annotations: { destructiveHint: true },
+      run: async (args) => {
+        const doc: Loose = {};
+        if (args.event) doc.event = args.event;
+        if (args.target_url) doc.target_url = args.target_url;
+        if (args.name) doc.name = args.name;
+        if (args.api_version) doc.api_version = args.api_version;
+        const r = (await client().updateWebhook(args.id, doc)) as { webhooks?: unknown[] } | null;
         return r?.webhooks?.[0];
       },
     }),

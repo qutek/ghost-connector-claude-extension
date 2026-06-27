@@ -200,10 +200,12 @@ export class GhostClient {
   getPost(id: string, params?: Record<string, unknown>) {
     return this._request("GET", `/posts/${id}/`, { query: params });
   }
-  createPost(doc: Record<string, unknown>) { return this._request("POST", "/posts/", { body: { posts: [doc] } }); }
-  updatePost(id: string, doc: Record<string, unknown>, updatedAt: string) {
+  createPost(doc: Record<string, unknown>, query?: Record<string, unknown>) {
+    return this._request("POST", "/posts/", { body: { posts: [doc] }, query });
+  }
+  updatePost(id: string, doc: Record<string, unknown>, updatedAt: string, query?: Record<string, unknown>) {
     doc.updated_at = updatedAt;
-    return this._request("PUT", `/posts/${id}/`, { body: { posts: [doc] } });
+    return this._request("PUT", `/posts/${id}/`, { body: { posts: [doc] }, query });
   }
   deletePost(id: string) { return this._request("DELETE", `/posts/${id}/`); }
 
@@ -212,10 +214,12 @@ export class GhostClient {
   getPage(id: string, params?: Record<string, unknown>) {
     return this._request("GET", `/pages/${id}/`, { query: params });
   }
-  createPage(doc: Record<string, unknown>) { return this._request("POST", "/pages/", { body: { pages: [doc] } }); }
-  updatePage(id: string, doc: Record<string, unknown>, updatedAt: string) {
+  createPage(doc: Record<string, unknown>, query?: Record<string, unknown>) {
+    return this._request("POST", "/pages/", { body: { pages: [doc] }, query });
+  }
+  updatePage(id: string, doc: Record<string, unknown>, updatedAt: string, query?: Record<string, unknown>) {
     doc.updated_at = updatedAt;
-    return this._request("PUT", `/pages/${id}/`, { body: { pages: [doc] } });
+    return this._request("PUT", `/pages/${id}/`, { body: { pages: [doc] }, query });
   }
   deletePage(id: string) { return this._request("DELETE", `/pages/${id}/`); }
 
@@ -266,7 +270,7 @@ export class GhostClient {
   }
 
   // ---- Webhooks ----
-  listWebhooks() { return this._request("GET", "/webhooks/"); }
   createWebhook(doc: Record<string, unknown>) { return this._request("POST", "/webhooks/", { body: { webhooks: [doc] } }); }
+  updateWebhook(id: string, doc: Record<string, unknown>) { return this._request("PUT", `/webhooks/${id}/`, { body: { webhooks: [doc] } }); }
   deleteWebhook(id: string) { return this._request("DELETE", `/webhooks/${id}/`); }
 }

@@ -36,9 +36,11 @@ export function pagesTools(client: () => GhostClient) {
       }),
       run: async (args) => {
         const doc: Loose = { title: args.title, status: args.status };
-        Object.assign(doc, buildContentFields(args));
+        const content = buildContentFields(args);
+        Object.assign(doc, content.body);
         for (const k of ["excerpt", "feature_image"] as const) if (args[k] !== undefined) doc[k] = args[k];
-        const r = (await client().createPage(doc)) as { pages?: unknown[] } | null;
+        const query = content.source ? { source: content.source } : undefined;
+        const r = (await client().createPage(doc, query)) as { pages?: unknown[] } | null;
         return r?.pages?.[0];
       },
     }),
@@ -56,11 +58,13 @@ export function pagesTools(client: () => GhostClient) {
       annotations: { destructiveHint: true },
       run: async (args) => {
         const doc: Loose = {};
-        Object.assign(doc, buildContentFields(args));
+        const content = buildContentFields(args);
+        Object.assign(doc, content.body);
         for (const k of ["title", "excerpt", "feature_image", "status"] as const) {
           if (args[k] !== undefined) doc[k] = args[k];
         }
-        const r = (await client().updatePage(args.id, doc, args.updated_at)) as { pages?: unknown[] } | null;
+        const query = content.source ? { source: content.source } : undefined;
+        const r = (await client().updatePage(args.id, doc, args.updated_at, query)) as { pages?: unknown[] } | null;
         return r?.pages?.[0];
       },
     }),
