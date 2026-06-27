@@ -1,0 +1,36 @@
+{
+  "name": "ghost-connector",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Connect Claude to your Ghost blog \u2014 write, publish, and manage posts, members, newsletters, and settings through conversation.",
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --format=cjs --target=node20 --outfile=build/server/index.js --banner:js=\"#!/usr/bin/env node\"",
+    "pack": "mcpb pack",
+    "validate": "mcpb validate manifest.json",
+    "inspector": "mcp-inspector node build/server/index.js",
+    "test": "node --experimental-strip-types --test",
+    "changeset": "changeset",
+    "version-packages": "changeset version && node scripts/sync-manifest-version.js",
+    "release": "node scripts/sync-manifest-version.js && npm run build && npm run pack"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.23.0",
+    "zod-to-json-schema": "^3.23.0"
+  },
+  "devDependencies": {
+    "@anthropic-ai/mcpb": "^2.1.2",
+    "@changesets/changelog-github": "^0.7.0",
+    "@changesets/cli": "^2.31.0",
+    "@modelcontextprotocol/inspector": "^0.22.0",
+    "esbuild": "^0.23.0"
+  },
+  "homepage": "https://github.com/qutek/ghost-connector-claude-extension",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qutek/ghost-connector-claude-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/qutek/ghost-connector-claude-extension/issues"
+  }
+}

@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install
+        run: bun install --frozen-lockfile
+
+      # Step 1: if pending changesets exist, open a "Version Packages" PR.
+      # If the Version PR was just merged (no pending changesets), fall through
+      # to the publish step below.
+      - name: Create or merge Version PR
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          version: bun run version-packages
+          title: "chore(release): version packages"
+          commit: "chore(release): version packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 2: when there are no pending changesets, a version bump just landed
+      # (via the merged Version PR) — build the artifact and ship a GitHub Release.
+      - name: Build, pack, and publish GitHub Release
+        if: steps.changesets.outputs.hasChangesets == 'false'
+        run: |
+          bun run build
+          bun run pack
+          VERSION=$(node -p "require('./package.json').version")
+          # Extract this version's changelog section (this header up to the next ## <num>)
+          awk -v v="## ${VERSION}" '
+            $0 ~ v {flag=1; next}
+            /^## [0-9]/ && flag {exit}
+            flag {print}
+          ' CHANGELOG.md > /tmp/release-notes.md
+          # gh release create fails if the tag exists; guard with --help-style check
+          if gh release view "v${VERSION}" >/dev/null 2>&1; then
+            echo "Release v${VERSION} already exists — skipping"
+          else
+            gh release create "v${VERSION}" \
+              --title "v${VERSION}" \
+              --notes-file /tmp/release-notes.md \
+              *.mcpb
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
