@@ -15,7 +15,7 @@ Connect Claude to your Ghost CMS blog and run your entire publishing workflow th
   <img src="demo.png" alt="Ghost Connector for Claude"/>
 </p>
 
->Write, publish, and manage your Ghost blog directly from Claude Desktop. [Watch the demo](https://cln.sh/NCNJ3ZFh){:target="_blank"}
+>Write, publish, and manage your Ghost blog directly from Claude Desktop. [Watch the demo](https://cln.sh/NCNJ3ZFh)
 
 ---
 
