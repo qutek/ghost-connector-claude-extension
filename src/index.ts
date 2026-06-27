@@ -88,7 +88,7 @@ async function main(): Promise<void> {
   try {
     requireConfig();
   } catch (err) {
-    console.warn("[ghost-connector]", err instanceof Error ? err.message : err);
+    console.error("[ghost-connector]", err instanceof Error ? err.message : err);
   }
   const transport = new StdioServerTransport();
   await server.connect(transport);

@@ -4,10 +4,10 @@
   "private": true,
   "description": "Connect Claude to your Ghost blog \u2014 write, publish, and manage posts, members, newsletters, and settings through conversation.",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --format=cjs --target=node20 --outfile=build/server/index.js --banner:js=\"#!/usr/bin/env node\"",
-    "pack": "mcpb pack",
+    "build": "esbuild src/index.ts --bundle --platform=node --format=cjs --target=node20 --outfile=server/index.js --banner:js=\"#!/usr/bin/env node\"",
+    "pack": "mcpb pack . ghost-connector-claude-extension.mcpb",
     "validate": "mcpb validate manifest.json",
-    "inspector": "mcp-inspector node build/server/index.js",
+    "inspector": "mcp-inspector node server/index.js",
     "test": "node --experimental-strip-types --test",
     "changeset": "changeset",
     "version-packages": "changeset version && node scripts/sync-manifest-version.js",

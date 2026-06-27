@@ -1,0 +1,24 @@
+# Source, tests, dev tooling — not needed at runtime
+src/
+test/
+scripts/
+build/
+dist/
+node_modules/
+.agents/
+.changeset/
+.github/
+.vscode/
+.idea/
+.codex/
+
+# Docs / metadata not consumed at runtime
+CONTRIBUTING.md
+README.md
+bun.lock
+skills-lock.json
+
+# Editor / OS
+.DS_Store
+*.log
+.env*
