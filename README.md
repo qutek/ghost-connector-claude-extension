@@ -14,9 +14,6 @@
 
 Connect Claude to your Ghost CMS blog and run your entire publishing workflow through conversation. Draft posts from an outline, manage newsletter members, swap themes, audit drafts — no admin-panel clicking, no copy-paste.
 
-<!-- TODO: replace with an actual demo GIF once recorded -->
-![Ghost Connector demo](https://via.placeholder.com/800x400/D97757/FFFFFF?text=Demo%3A+Claude+publishing+a+post+to+Ghost)
-
 ---
 
 ## What you can do
@@ -37,7 +34,7 @@ Connect Claude to your Ghost CMS blog and run your entire publishing workflow th
 
 ### Path A — Claude Desktop (recommended, one-click)
 
-1. Download the latest [`ghost-connector-0.1.0.mcpb`](https://github.com/qutek/ghost-connector-claude-extension/releases/latest) from the [releases page](https://github.com/qutek/ghost-connector-claude-extension/releases).
+1. Download the latest version from the [releases page](https://github.com/qutek/ghost-connector-claude-extension/releases).
 2. Open **Claude Desktop** → **Settings** → **Connectors** → **Add connector**.
 3. Select the downloaded `.mcpb` file.
 4. Enter when prompted:

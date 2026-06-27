@@ -30,7 +30,9 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          version: bun run version-packages
+          # Retry: @changesets/changelog-github calls api.github.com/graphql,
+          # which intermittently 5xxs on Actions runners ("Premature close").
+          version: n=0; until [ $n -ge 4 ]; do bun run version-packages && break; n=$((n+1)); echo "retry $n/4 in 15s..."; sleep 15; done
           title: "chore(release): version packages"
           commit: "chore(release): version packages"
         env:
