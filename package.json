@@ -1,6 +1,6 @@
 {
   "name": "ghost-connector",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Connect Claude to your Ghost blog — write, publish, and manage posts, members, newsletters, and settings through conversation.",
   "scripts": {
