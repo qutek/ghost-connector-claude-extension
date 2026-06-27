@@ -4,8 +4,6 @@
   <img src="icon.png" alt="Ghost Connector for Claude" width="128" />
 </p>
 
-> Write, publish, and manage your Ghost blog directly from Claude Desktop.
-
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](#license)
 [![Node](https://img.shields.io/badge/node-%E2%89%A520-339933)](#development)
 [![Claude](https://img.shields.io/badge/Claude-Desktop-D97757)](https://claude.ai)
@@ -13,7 +11,11 @@
 
 Connect Claude to your Ghost CMS blog and run your entire publishing workflow through conversation. Draft posts from an outline, manage newsletter members, swap themes, audit drafts — no admin-panel clicking, no copy-paste.
 
-[![Watch the demo](demo.png)](https://github.com/qutek/ghost-connector-claude-extension/raw/main/demo.webm)
+<p align="center">
+  <img src="demo.png" alt="Ghost Connector for Claude"/>
+</p>
+
+>Write, publish, and manage your Ghost blog directly from Claude Desktop. [Watch the demo](https://cln.sh/NCNJ3ZFh){:target="_blank"}
 
 ---
 
