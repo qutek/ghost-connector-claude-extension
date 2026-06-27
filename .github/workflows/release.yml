@@ -30,9 +30,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          # Retry: @changesets/changelog-github calls api.github.com/graphql,
-          # which intermittently 5xxs on Actions runners ("Premature close").
-          version: n=0; until [ $n -ge 4 ]; do bun run version-packages && break; n=$((n+1)); echo "retry $n/4 in 15s..."; sleep 15; done
+          version: bun run version-packages
           title: "chore(release): version packages"
           commit: "chore(release): version packages"
         env:
@@ -46,13 +44,19 @@ jobs:
           bun run build
           bun run pack
           VERSION=$(node -p "require('./package.json').version")
-          # Extract this version's changelog section (this header up to the next ## <num>)
-          awk -v v="## ${VERSION}" '
-            $0 ~ v {flag=1; next}
-            /^## [0-9]/ && flag {exit}
-            flag {print}
-          ' CHANGELOG.md > /tmp/release-notes.md
-          # gh release create fails if the tag exists; guard with --help-style check
+          # Extract this version's changelog section (header up to next ## <num>)
+          if [ -f CHANGELOG.md ]; then
+            awk -v v="## ${VERSION}" '
+              $0 ~ v {flag=1; next}
+              /^## [0-9]/ && flag {exit}
+              flag {print}
+            ' CHANGELOG.md > /tmp/release-notes.md
+          fi
+          # Fallback notes if extraction yielded nothing
+          if [ ! -s /tmp/release-notes.md ]; then
+            echo "Release v${VERSION}. See CHANGELOG.md for details." > /tmp/release-notes.md
+          fi
+          # Guard: skip if release already exists
           if gh release view "v${VERSION}" >/dev/null 2>&1; then
             echo "Release v${VERSION} already exists — skipping"
           else

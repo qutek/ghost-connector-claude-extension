@@ -2,7 +2,7 @@
   "name": "ghost-connector",
   "version": "0.1.0",
   "private": true,
-  "description": "Connect Claude to your Ghost blog \u2014 write, publish, and manage posts, members, newsletters, and settings through conversation.",
+  "description": "Connect Claude to your Ghost blog — write, publish, and manage posts, members, newsletters, and settings through conversation.",
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=cjs --target=node20 --outfile=server/index.js --banner:js=\"#!/usr/bin/env node\"",
     "pack": "mcpb pack . ghost-connector-claude-extension.mcpb",
@@ -20,7 +20,6 @@
   },
   "devDependencies": {
     "@anthropic-ai/mcpb": "^2.1.2",
-    "@changesets/changelog-github": "^0.7.0",
     "@changesets/cli": "^2.31.0",
     "@modelcontextprotocol/inspector": "^0.22.0",
     "esbuild": "^0.23.0"
