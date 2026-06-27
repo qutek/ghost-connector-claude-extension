@@ -98,7 +98,7 @@ test("validateKeyFormat: rejects malformed key", () => {
 test("GhostClient: constructor rejects malformed key via validateKeyFormat", () => {
   const { GhostClient } = require("../src/ghost.ts");
   assert.throws(
-    () => new GhostClient({ blogUrl: "https://x.example.com", adminKey: "bad" }),
+    () => new GhostClient({ ghostUrl: "https://x.example.com", adminKey: "bad" }),
     /Invalid Ghost Admin API key format/,
   );
 });

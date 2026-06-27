@@ -25,7 +25,7 @@ function makeFetch(stub) {
 
 function makeClient(stub) {
   return new GhostClient({
-    blogUrl: "https://blog.example.com",
+    ghostUrl: "https://blog.example.com",
     adminKey: "5c9e3bf3e2babc0b3a4f5e6d:a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2",
     fetchImpl: makeFetch(stub),
   });
@@ -33,7 +33,7 @@ function makeClient(stub) {
 
 function makeClientNoRetry(stub) {
   return new GhostClient({
-    blogUrl: "https://blog.example.com",
+    ghostUrl: "https://blog.example.com",
     adminKey: "5c9e3bf3e2babc0b3a4f5e6d:a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2",
     fetchImpl: makeFetch(stub),
     maxRetries: 0,
@@ -97,7 +97,7 @@ test("GhostClient: 404 is not retried (immediate throw)", async () => {
 test("GhostClient: 429 retried then succeeds", async () => {
   let calls = 0;
   const c = new GhostClient({
-    blogUrl: "https://blog.example.com",
+    ghostUrl: "https://blog.example.com",
     adminKey: "5c9e3bf3e2babc0b3a4f5e6d:a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2",
     fetchImpl: makeFetch(() => {
       calls++;
@@ -115,7 +115,7 @@ test("GhostClient: 429 retried then succeeds", async () => {
 test("GhostClient: 500 retried up to maxRetries then throws", async () => {
   let calls = 0;
   const c = new GhostClient({
-    blogUrl: "https://blog.example.com",
+    ghostUrl: "https://blog.example.com",
     adminKey: "5c9e3bf3e2babc0b3a4f5e6d:a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2",
     fetchImpl: makeFetch(() => {
       calls++;
@@ -133,7 +133,7 @@ test("GhostClient: 500 retried up to maxRetries then throws", async () => {
 test("GhostClient: POST is NOT retried even on 500 (non-idempotent)", async () => {
   let calls = 0;
   const c = new GhostClient({
-    blogUrl: "https://blog.example.com",
+    ghostUrl: "https://blog.example.com",
     adminKey: "5c9e3bf3e2babc0b3a4f5e6d:a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2",
     fetchImpl: makeFetch(() => {
       calls++;
@@ -148,7 +148,7 @@ test("GhostClient: POST is NOT retried even on 500 (non-idempotent)", async () =
 test("GhostClient: network error on GET is retried", async () => {
   let calls = 0;
   const c = new GhostClient({
-    blogUrl: "https://blog.example.com",
+    ghostUrl: "https://blog.example.com",
     adminKey: "5c9e3bf3e2babc0b3a4f5e6d:a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2",
     fetchImpl: async () => {
       calls++;
@@ -164,7 +164,7 @@ test("GhostClient: network error on GET is retried", async () => {
 
 test("GhostClient: timeout surfaces as GhostApiError status 0", async () => {
   const c = new GhostClient({
-    blogUrl: "https://blog.example.com",
+    ghostUrl: "https://blog.example.com",
     adminKey: "5c9e3bf3e2babc0b3a4f5e6d:a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2",
     fetchImpl: async () => { throw new Error("TimeoutError: The operation was aborted"); },
     timeoutMs: 10,
@@ -206,7 +206,7 @@ test("GhostClient: is a singleton across tool calls (cached token)", async () =>
   // checking that rapid successive calls reuse the same Authorization header.
   let seenAuths = new Set();
   const c = new GhostClient({
-    blogUrl: "https://blog.example.com",
+    ghostUrl: "https://blog.example.com",
     adminKey: "5c9e3bf3e2babc0b3a4f5e6d:a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2",
     fetchImpl: makeFetch((u, opts) => {
       seenAuths.add(opts.headers.Authorization);

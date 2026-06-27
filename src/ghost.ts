@@ -39,9 +39,9 @@ export function validateKeyFormat(adminKey: string): void {
   }
 }
 
-export function normalizeBase(blogUrl: string | undefined): string {
-  if (!blogUrl) throw new Error("Missing Ghost blog URL.");
-  let u = String(blogUrl).trim().replace(/\/+$/, "");
+export function normalizeBase(ghostUrl: string | undefined): string {
+  if (!ghostUrl) throw new Error("Missing Ghost blog URL.");
+  let u = String(ghostUrl).trim().replace(/\/+$/, "");
   if (!/^https?:\/\//i.test(u)) u = `https://${u}`;
   return u;
 }
@@ -49,7 +49,7 @@ export function normalizeBase(blogUrl: string | undefined): string {
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
 export interface GhostClientOptions {
-  blogUrl: string | undefined;
+  ghostUrl: string | undefined;
   adminKey: string;
   fetchImpl?: typeof fetch;
   timeoutMs?: number;
@@ -88,8 +88,8 @@ export class GhostClient {
   private readonly maxRetries: number;
   private cachedToken: { token: string; exp: number } | null = null;
 
-  constructor({ blogUrl, adminKey, fetchImpl, timeoutMs = 30_000, maxRetries = 2 }: GhostClientOptions) {
-    this.base = `${normalizeBase(blogUrl)}/ghost/api/admin`;
+  constructor({ ghostUrl, adminKey, fetchImpl, timeoutMs = 30_000, maxRetries = 2 }: GhostClientOptions) {
+    this.base = `${normalizeBase(ghostUrl)}/ghost/api/admin`;
     this.adminKey = adminKey;
     validateKeyFormat(adminKey);
     this.fetch = fetchImpl || globalThis.fetch;

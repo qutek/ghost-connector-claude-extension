@@ -2,7 +2,7 @@ import { z } from "zod";
 import { GhostClient } from "../ghost.js";
 import { t, type Loose } from "./_shared.js";
 
-export function metaTools(client: () => GhostClient, blogUrl: string | undefined) {
+export function metaTools(client: () => GhostClient, ghostUrl: string | undefined) {
   return [
     t({
       name: "ghost_whoami",
@@ -12,7 +12,7 @@ export function metaTools(client: () => GhostClient, blogUrl: string | undefined
       run: async () => {
         const s = ((await client().getSettings()) as { settings?: Loose } | null)?.settings || {};
         return {
-          blog_url: blogUrl,
+          blog_url: ghostUrl,
           site_title: s.title,
           site_description: s.description,
           timezone: s.timezone,

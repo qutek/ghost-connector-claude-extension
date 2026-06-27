@@ -40,20 +40,20 @@
         "${__dirname}/server/index.js"
       ],
       "env": {
-        "GHOST_URL": "${user_config.blogUrl}",
-        "GHOST_API_KEY": "${user_config.apiKey}"
+        "GHOST_URL": "${user_config.ghostUrl}",
+        "GHOST_API_KEY": "${user_config.ghostApiKey}"
       }
     }
   },
   "user_config": {
-    "blogUrl": {
+    "ghostUrl": {
       "type": "string",
       "title": "Ghost blog URL",
       "description": "Base URL of your Ghost site, e.g. https://myblog.ghost.io or https://blog.example.com. You can change this later in Claude Desktop connector settings.",
       "default": "",
       "required": true
     },
-    "apiKey": {
+    "ghostApiKey": {
       "type": "string",
       "title": "Staff Admin API key",
       "description": "From Ghost Admin → Integrations → Add custom integration → 'Admin API key'. Format: '<id>:<secret>'. Stored encrypted in your OS keychain.",

@@ -13,11 +13,11 @@ import { siteTools } from "./tools/site.js";
 import { integrationsTools } from "./tools/integrations.js";
 import { metaTools } from "./tools/meta.js";
 
-const blogUrl = process.env.GHOST_URL;
+const ghostUrl = process.env.GHOST_URL;
 const adminKey = process.env.GHOST_API_KEY;
 
 function requireConfig(): void {
-  if (!blogUrl || !adminKey) {
+  if (!ghostUrl || !adminKey) {
     throw new Error(
       "Ghost MCP server not configured. Set GHOST_URL (your blog base URL, e.g. https://myblog.ghost.io) " +
       "and GHOST_API_KEY (Staff Admin API key from Ghost admin > Integrations > Custom Integration, format '<id>:<secret>')."
@@ -29,7 +29,7 @@ let _client: GhostClient | null = null;
 function client(): GhostClient {
   if (_client) return _client;
   requireConfig();
-  _client = new GhostClient({ blogUrl: blogUrl!, adminKey: adminKey! });
+  _client = new GhostClient({ ghostUrl: ghostUrl!, adminKey: adminKey! });
   return _client;
 }
 
@@ -44,7 +44,7 @@ const TOOLS: AnyTool[] = [
   ...membersTools(client),
   ...siteTools(client),
   ...integrationsTools(client),
-  ...metaTools(client, blogUrl),
+  ...metaTools(client, ghostUrl),
 ];
 
 // ---- Server setup (high-level McpServer API) ----
